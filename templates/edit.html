@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static//icons/financial.png" type="image/x-icon">
+    <title>修改交易</title>
+
+    <style>
+        body ,table {
+            font-size: 30px; /* 設置所有文字大小為40px */
+            text-align: center;
+            margin: 0 auto; /* 水平置中 */
+        }
+        label, input, select, button {
+            font-size: 30px; /* 設置元素文字大小為40px */
+            display: block;
+            width: 100%; /* 設置元素寬度 */
+            margin-bottom: 10px;
+        }
+        button {
+            width: auto; /* 按鈕寬度自適應內容 */
+            margin: 0 auto; /* 水平置中 */
+        }
+        tr ,td{
+            height: 50px; /* 设置行高为 50px */
+        }
+    </style>
+</head>
+<body>
+    <h1>修改交易記錄</h1>
+    <table>
+        <form action="/update_transaction" method="post">
+            <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+            <tr>
+                <td><label for="date">日期:</label></td>
+                <td><input type="text" id="date" name="date" value="{{ transaction.date }}" required></td>
+            </tr>
+            <tr>
+                <td><label for="class">類別:</label></td>
+                <td>
+                    <!-- 使用下拉選單 -->
+                    <select id="class" name="class">
+                        <!-- 如果原類別是收入，則設置 selected -->
+                        <option value="income" {% if transaction.class_ == 'income' %} selected {% endif %}>收入</option>
+                        <!-- 如果原類別是支出，則設置 selected -->
+                        <option value="expense" {% if transaction.class_ == 'expense' %} selected {% endif %}>支出</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="cost">金額:</label></td>
+                <td><input type="text" id="cost" name="cost" value="{{ transaction.cost }}" required></td>
+            </tr>
+            <tr>
+                <td><label for="category">用途:</label></td>
+                <td><input type="text" id="category" name="category" value="{{ transaction.category }}"></td>
+            </tr>
+            <tr>
+                <td><label for="remark">備註:</label></td>
+                <td><input type="text" id="remark" name="remark" value="{{ transaction.remark }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit">確定修改</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <!-- 新增取消按鈕 -->
+                <td><button type="button" class="cancel-button" onclick="window.location.href='/'">取消修改</button></td>
+            </tr>
+        </form>
+        <form action="/delete_transaction" method="post" onsubmit="return confirm('確定要刪除此記錄嗎？');">
+            <tr>
+                <td></td>
+                <td>
+                    <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                    <button type="submit" class="delete-button">刪除記錄</button>
+                </td>
+            </tr>
+        </form>
+    </table>
+</body>
+</html>

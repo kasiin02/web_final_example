@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/icons/financial.png" type="image/x-icon">
+    <title>收支圖表</title>
+    <style>
+        .chart-container {
+            margin-bottom: 50px; /* 添加一些间距 */
+        }
+        .chart {
+            width: 800px;
+            height: 300px;
+            display: inline-block; /* 使图表容器并排显示 */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            font-size: 30px; /* 設置元素文字大小為40px */
+            display: block;
+            width: auto; /* 按鈕寬度自適應內容 */
+            margin: 0 auto; /* 水平置中 */
+        }
+    </style>
+    <!-- 引入 Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    {% for transaction in mT %}
+    <div class="chart-container">
+        <h1>{{ transaction.date }} 收支圖表</h1>
+        <div id="incomeChart{{ loop.index }}" class="chart"></div>
+        <div id="expenseChart{{ loop.index }}" class="chart"></div>
+        <div id="allChart{{ loop.index }}" class="chart"></div>
+        <div id="balance{{ loop.index }} " style="text-align: center; font-size: 30px; display: inline-block;">餘額: {{ transaction.balance }}</div> <!-- 添加余额显示 -->
+    </div>
+    <script>
+        // 获取收入数据
+        const incomeDetails{{ loop.index }} = {{ transaction.income_details | tojson }};
+        const expenseDetails{{ loop.index }} = {{ transaction.expense_details | tojson }};
+
+        const incomeData{{ loop.index }} = [['Category', 'Amount']];
+        incomeDetails{{ loop.index }}.forEach(item => {
+            incomeData{{ loop.index }}.push([item.category, item.amount]);
+        });
+
+        const expenseData{{ loop.index }} = [['Category', 'Amount']];
+        expenseDetails{{ loop.index }}.forEach(item => {
+            expenseData{{ loop.index }}.push([item.category, item.amount]);
+        });
+
+        const allData{{ loop.index }} = [
+            ['Category', 'Amount'],
+            ['收入', {{ transaction.total_income }}],
+            ['支出', {{ transaction.total_expense }}]
+        ];
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawIncomeChart{{ loop.index }});
+
+        function drawIncomeChart{{ loop.index }}() {
+            var incomeChartData = google.visualization.arrayToDataTable(incomeData{{ loop.index }});
+
+            var incomeOptions = {
+                title: '{{ transaction.date }} 收入圖表',
+                is3D: true,
+                fontSize: 30
+            };
+
+            var incomeChart = new google.visualization.PieChart(document.getElementById('incomeChart{{ loop.index }}'));
+            incomeChart.draw(incomeChartData, incomeOptions);
+        }
+
+        google.charts.setOnLoadCallback(drawExpenseChart{{ loop.index }});
+
+        function drawExpenseChart{{ loop.index }}() {
+            var expenseChartData = google.visualization.arrayToDataTable(expenseData{{ loop.index }});
+
+            var expenseOptions = {
+                title: '{{ transaction.date }} 支出圖表',
+                is3D: true,
+                fontSize: 30
+            };
+
+            var expenseChart = new google.visualization.PieChart(document.getElementById('expenseChart{{ loop.index }}'));
+            expenseChart.draw(expenseChartData, expenseOptions);
+        }
+
+        google.charts.setOnLoadCallback(drawAllChart{{ loop.index }});
+
+        function drawAllChart{{ loop.index }}() {
+            var allChartData = google.visualization.arrayToDataTable(allData{{ loop.index }});
+
+            var allOptions = {
+                title: '{{ transaction.date }} 總收入與總支出圖表',
+                is3D: true,
+                fontSize: 30
+            };
+
+            var allChart = new google.visualization.PieChart(document.getElementById('allChart{{ loop.index }}'));
+            allChart.draw(allChartData, allOptions);
+        }
+    </script>
+    {% endfor %}
+
+    <!-- 新增返回按鈕 -->
+    <button type="button" class="cancel-button" onclick="window.location.href='/'">返回</button>
+</body>
+</html>

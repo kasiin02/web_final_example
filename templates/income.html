@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static//icons/financial.png" type="image/x-icon">
+    <title>新增交易紀錄</title>
+    <style>
+        /* 設置文字大小為40px */
+        .container {
+            text-align: center;
+        }
+        form {
+            margin: 0 auto;
+            width: 50%; /* 設置表單寬度 */
+        }
+        label, input, select, button {
+            font-size: 30px; /* 設置元素文字大小為40px */
+            display: block;
+            width: 100%; /* 設置元素寬度 */
+            margin-bottom: 10px;
+        }
+        button {
+            width: auto; /* 按鈕寬度自適應內容 */
+            margin: 0 auto; /* 水平置中 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>新增交易紀錄</h1>
+        <form action="/add_transaction" method="post">
+            <label for="class">類型:</label>
+            <select id="class" name="class">
+                <option value="expense">支出</option>
+                <option value="income">收入</option>
+            </select>
+            <label for="cost">金額:</label>
+            <input type="number" id="cost" name="cost" step="0.01" required>
+            <label for="category">用途:</label>
+            <input type="text" id="category" name="category">
+            <label for="remark">備註:</label>
+            <input type="text" id="remark" name="remark">
+            <button type="submit">新增紀錄</button>
+            <p><br></p>
+            <!-- 新增取消按鈕 -->
+            <button type="button" class="cancel-button" onclick="window.location.href='/'">取消新增</button>
+        </form>
+    </div>
+</body>
+</html>

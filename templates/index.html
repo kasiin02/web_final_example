@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static//icons/financial.png" type="image/x-icon">
+    <title>交易記錄</title>
+    <style>
+        body ,select{
+            font-size: 30px; /* 設置所有文字大小為40px */
+        }
+        .container {
+            text-align: center;
+        }
+        table {
+            margin: 0 auto;
+        }
+        th, td {
+            width: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>交易記錄</h1>
+        <form action="/show_transaction" method="GET">
+            <select name="month" id="month" onchange="this.form.submit()">
+                <option value="" {% if not selected_month %} selected {% endif %}>收支報表</option>
+                {% for year in years %}
+                    <option value="{{ year }}" {% if year == selected_month %} selected {% endif %}>{{ year }}</option>
+                {% endfor %}
+                {% for month in months %}
+                    <option value="{{ month }}" {% if month == selected_month %} selected {% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <p></p>
+        <a href="/new_transaction">新增交易紀錄</a>
+        <p></p>
+        {% if transactions %}
+        <table  border="1">
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>金額</th>
+                    <th>用途</th>
+                    <th>備註</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ translate_class(transaction.class_) }}</td>
+                    <td>{{ transaction.cost }}</td>
+                    <td>{{ transaction.category }}</td>
+                    <td>{{ transaction.remark }}</td>
+                    <!-- 新增修改按鈕 -->
+                    <td><a href="/edit/{{ transaction.id }}">修改</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>無任何交易紀錄</p>
+        {% endif %}
+    </div>
+</body>
+</html>
